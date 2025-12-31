@@ -3,7 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
  * Map utilities for BPGE Events
- * Handles coordinates, validation, normalization and map data generation.
+ * Handles coordinates, validation, normalization and geocoding.
  */
 class BPGEVENTS_Maps {
 
@@ -14,7 +14,7 @@ class BPGEVENTS_Maps {
     const DEFAULT_LNG = 12.4964;
 
     public function __construct() {
-        // Placeholder for future geocoding or map providers
+        // Future hooks if needed
     }
 
     /**
@@ -75,79 +75,47 @@ class BPGEVENTS_Maps {
         $parts = array_filter( array( $address, $city, $province, $country ) );
 
         if ( empty( $parts ) ) {
-            return __( 'Location not specified', 'bpgevents' );
+            return '';
         }
 
         return implode( ', ', $parts );
     }
 
     /**
-     * Build marker data for JS maps
-     */
-    public static function get_marker_data( $post_id ) {
-
-        $coords = self::get_coordinates_or_default( $post_id );
-
-        return array(
-            'id'       => $post_id,
-            'title'    => get_the_title( $post_id ),
-            'url'      => get_permalink( $post_id ),
-            'lat'      => floatval( $coords['lat'] ),
-            'lng'      => floatval( $coords['lng'] ),
-            'virtual'  => BPGEVENTS_Utils::is_virtual( $post_id ),
-            'location' => self::normalize_address( $post_id ),
-        );
-    }
-
-    /**
-     * Build marker list for all events
-     */
-    public static function get_all_markers() {
-
-        $query = new WP_Query(array(
-            'post_type'      => 'bpge_event',
-            'posts_per_page' => -1,
-        ));
-
-        $markers = array();
-
-        foreach ( $query->posts as $post ) {
-            $markers[] = self::get_marker_data( $post->ID );
-        }
-
-        return $markers;
-    }
-
-    /**
-     * Compute bounding box for map auto-fit
-     */
-    public static function get_bounds( $markers ) {
-
-        if ( empty( $markers ) ) {
-            return array(
-                'min_lat' => self::DEFAULT_LAT,
-                'max_lat' => self::DEFAULT_LAT,
-                'min_lng' => self::DEFAULT_LNG,
-                'max_lng' => self::DEFAULT_LNG,
-            );
-        }
-
-        $lats = array_column( $markers, 'lat' );
-        $lngs = array_column( $markers, 'lng' );
-
-        return array(
-            'min_lat' => min( $lats ),
-            'max_lat' => max( $lats ),
-            'min_lng' => min( $lngs ),
-            'max_lng' => max( $lngs ),
-        );
-    }
-
-    /**
-     * Placeholder for future geocoding (OpenStreetMap, Nominatim, etc.)
+     * Geocode address using Nominatim (OpenStreetMap)
      */
     public static function geocode_address( $address ) {
-        // Future implementation
-        return false;
+
+        if ( empty( $address ) ) {
+            return false;
+        }
+
+        $url = add_query_arg(array(
+            'q'      => urlencode( $address ),
+            'format' => 'json',
+            'limit'  => 1,
+        ), 'https://nominatim.openstreetmap.org/search');
+
+        $response = wp_remote_get( $url, array(
+            'timeout' => 10,
+            'headers' => array(
+                'User-Agent' => 'BPGE Events Plugin (WordPress)'
+            )
+        ));
+
+        if ( is_wp_error( $response ) ) {
+            return false;
+        }
+
+        $body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+        if ( empty( $body[0] ) ) {
+            return false;
+        }
+
+        return array(
+            'lat' => floatval( $body[0]['lat'] ),
+            'lng' => floatval( $body[0]['lon'] ),
+        );
     }
 }
