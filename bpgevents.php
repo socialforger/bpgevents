@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
- * Autoloader PSR‑4 semplificato
+ * Autoloader PSR‑4
  */
 spl_autoload_register( function( $class ) {
 
@@ -20,18 +20,23 @@ spl_autoload_register( function( $class ) {
     $name = strtolower( str_replace( 'BPGEVENTS_', '', $class ) );
     $name = str_replace( '_', '-', $name );
 
+    // Helpers
     if ( strpos( $name, 'utils' ) !== false || strpos( $name, 'ics' ) !== false ) {
         $file = $base . 'includes/helpers/class-bpgevents-' . $name . '.php';
 
+    // Admin
     } elseif ( strpos( $name, 'settings' ) !== false ) {
         $file = $base . 'admin/class-bpgevents-' . $name . '.php';
 
+    // Widgets
     } elseif ( strpos( $name, 'widget' ) !== false ) {
         $file = $base . 'widgets/widget-bpgevents-' . $name . '.php';
 
+    // Shortcodes
     } elseif ( strpos( $name, 'shortcode' ) !== false ) {
         $file = $base . 'shortcodes/shortcode-bpgevents-' . $name . '.php';
 
+    // Core
     } else {
         $file = $base . 'includes/class-bpgevents-' . $name . '.php';
     }
