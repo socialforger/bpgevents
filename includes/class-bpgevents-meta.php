@@ -2,7 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
- * Handles event meta fields (location, virtual, coordinates)
+ * Handles event meta fields (location, virtual, coordinates, geocoding)
  */
 class BPGEVENTS_Meta {
 
@@ -49,7 +49,7 @@ class BPGEVENTS_Meta {
      */
     public function save( $post_id ) {
 
-        // Security check
+        // Security: nonce
         if ( ! isset( $_POST['bpge_event_nonce'] ) ) return;
         if ( ! wp_verify_nonce( $_POST['bpge_event_nonce'], 'bpge_event_save' ) ) return;
 
@@ -68,5 +68,38 @@ class BPGEVENTS_Meta {
         update_post_meta( $post_id, '_bpge_virtual_url',  esc_url_raw($_POST['bpge_virtual_url'] ?? '') );
         update_post_meta( $post_id, '_bpge_lat',          sanitize_text_field($_POST['bpge_lat'] ?? '') );
         update_post_meta( $post_id, '_bpge_lng',          sanitize_text_field($_POST['bpge_lng'] ?? '') );
+
+        /**
+         * ---------------------------------------------------------
+         *  GEOCODING AUTOMATICO (solo se attivato e necessario)
+         * ---------------------------------------------------------
+         */
+
+        $options = get_option( 'bpgevents_settings' );
+        $enable_geocoding = ! empty( $options['enable_geocoding'] );
+
+        // Skip geocoding for virtual events
+        if ( isset($_POST['bpge_virtual']) ) {
+            return;
+        }
+
+        $lat = get_post_meta( $post_id, '_bpge_lat', true );
+        $lng = get_post_meta( $post_id, '_bpge_lng', true );
+
+        // Only geocode if coordinates are missing
+        if ( $enable_geocoding && ( empty( $lat ) || empty( $lng ) ) ) {
+
+            $address = BPGEVENTS_Maps::normalize_address( $post_id );
+
+            if ( ! empty( $address ) ) {
+
+                $coords = BPGEVENTS_Maps::geocode_address( $address );
+
+                if ( $coords ) {
+                    update_post_meta( $post_id, '_bpge_lat', $coords['lat'] );
+                    update_post_meta( $post_id, '_bpge_lng', $coords['lng'] );
+                }
+            }
+        }
     }
 }
