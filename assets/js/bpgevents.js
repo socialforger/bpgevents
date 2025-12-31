@@ -1,61 +1,76 @@
-/**
- * BPGE Events – Frontend JS
- * Handles participation toggle and basic UI interactions
- */
-
-document.addEventListener("DOMContentLoaded", function () {
+(function($){
 
     /**
-     * PARTICIPATION BUTTON
-     * ---------------------------------------------------------
+     * JOIN / LEAVE EVENT (AJAX)
      */
-    const buttons = document.querySelectorAll(".bpgevents-participation-btn");
+    $(document).on('click', '.bpge-join-event, .bpge-leave-event', function(e){
+        e.preventDefault();
 
-    if (buttons.length > 0) {
+        var button = $(this);
+        var eventID = button.data('event');
 
-        buttons.forEach(function (btn) {
+        $.ajax({
+            url: bpgevents_ajax.ajax_url,
+            type: 'POST',
+            data: {
+                action: 'bpgevents_toggle_participation',
+                event_id: eventID
+            },
+            beforeSend: function(){
+                button.addClass('loading');
+            },
+            success: function(response){
 
-            btn.addEventListener("click", function () {
+                button.removeClass('loading');
 
-                const eventId = this.getAttribute("data-event-id");
+                if (!response || !response.success) return;
 
-                if (!eventId) return;
+                // Update button label
+                if (response.data.joined) {
+                    button.removeClass('bpge-join-event')
+                          .addClass('bpge-leave-event')
+                          .text(bpgevents_ajax.leave_label);
+                } else {
+                    button.removeClass('bpge-leave-event')
+                          .addClass('bpge-join-event')
+                          .text(bpgevents_ajax.join_label);
+                }
 
-                const formData = new FormData();
-                formData.append("action", "bpgevents_toggle_participation");
-                formData.append("event_id", eventId);
-
-                fetch(bpgevents_ajax.ajax_url, {
-                    method: "POST",
-                    credentials: "same-origin",
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-
-                    if (!data || !data.success) {
-                        alert(data?.data?.message || "Error");
-                        return;
-                    }
-
-                    // Update button text
-                    if (data.data.status === "added") {
-                        btn.textContent = bpgevents_ajax.leave_label;
-                    } else {
-                        btn.textContent = bpgevents_ajax.join_label;
-                    }
-
-                    // Update participants count
-                    const countEl = btn.parentNode.querySelector(".bpgevents-participants-count");
-                    if (countEl) {
-                        countEl.textContent = bpgevents_ajax.participants_label.replace("%d", data.data.count);
-                    }
-                })
-                .catch(() => {
-                    alert("Request failed.");
-                });
-            });
+                // Update participants count
+                if (response.data.participants !== undefined) {
+                    $('.bpge-participants-count').text(
+                        bpgevents_ajax.participants_label.replace('%d', response.data.participants)
+                    );
+                }
+            }
         });
-    }
+    });
 
-});
+
+    /**
+     * LEAFLET MAP INITIALIZATION
+     */
+    window.BPGE_init_map = function(containerID, lat, lng, zoom, markerIconURL, shadowURL) {
+
+        if (!document.getElementById(containerID)) return;
+
+        var map = L.map(containerID).setView([lat, lng], zoom);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        var icon = L.icon({
+            iconUrl: markerIconURL,
+            shadowUrl: shadowURL,
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            shadowSize: [41, 41]
+        });
+
+        L.marker([lat, lng], { icon: icon }).addTo(map);
+
+        return map;
+    };
+
+})(jQuery);
