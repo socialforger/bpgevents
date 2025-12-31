@@ -2,7 +2,9 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 class BPGEVENTS_Templates {
+
     public function __construct() {
-        // Placeholder per override template logic (già gestito in bpgevents.php)
+        // La logica principale di override è in bpgevents.php
+        // Qui puoi aggiungere funzioni helper per template se ti servono in futuro.
     }
 }
