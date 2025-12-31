@@ -1,0 +1,245 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Buddypress Groups Events 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bpgevents\n"
+"POT-Creation-Date: 2025-01-01 00:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: \n"
+"Language-Team: Socialforger <info@socialforger.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: BPGE POT Builder\n"
+"X-Domain: bpgevents\n"
+
+# --------------------------------------------------------------
+# CPT
+# --------------------------------------------------------------
+
+msgid "Event"
+msgstr ""
+
+msgid "Events"
+msgstr ""
+
+msgid "Add New Event"
+msgstr ""
+
+msgid "Edit Event"
+msgstr ""
+
+msgid "New Event"
+msgstr ""
+
+msgid "View Event"
+msgstr ""
+
+msgid "Search Events"
+msgstr ""
+
+msgid "No events found."
+msgstr ""
+
+msgid "No events found in Trash."
+msgstr ""
+
+msgid "All Events"
+msgstr ""
+
+# --------------------------------------------------------------
+# Meta Fields
+# --------------------------------------------------------------
+
+msgid "Event Details"
+msgstr ""
+
+msgid "Virtual Event"
+msgstr ""
+
+msgid "Presential Event"
+msgstr ""
+
+msgid "Is this a virtual event?"
+msgstr ""
+
+msgid "City"
+msgstr ""
+
+msgid "Address"
+msgstr ""
+
+msgid "Province"
+msgstr ""
+
+msgid "Country"
+msgstr ""
+
+msgid "Virtual Event URL"
+msgstr ""
+
+msgid "Latitude"
+msgstr ""
+
+msgid "Longitude"
+msgstr ""
+
+msgid "Save Event"
+msgstr ""
+
+# --------------------------------------------------------------
+# Participation
+# --------------------------------------------------------------
+
+msgid "Join Event"
+msgstr ""
+
+msgid "Leave Event"
+msgstr ""
+
+msgid "Participants: %d"
+msgstr ""
+
+msgid "You must be logged in to join this event."
+msgstr ""
+
+msgid "Invalid event."
+msgstr ""
+
+msgid "You have joined the event."
+msgstr ""
+
+msgid "You have left the event."
+msgstr ""
+
+# --------------------------------------------------------------
+# Shortcodes
+# --------------------------------------------------------------
+
+msgid "My Events"
+msgstr ""
+
+msgid "You must be logged in to view your events."
+msgstr ""
+
+msgid "You have not created any events yet."
+msgstr ""
+
+msgid "Invalid event ID."
+msgstr ""
+
+msgid "This event does not have valid map coordinates."
+msgstr ""
+
+# --------------------------------------------------------------
+# Widgets
+# --------------------------------------------------------------
+
+msgid "Upcoming Events"
+msgstr ""
+
+msgid "Displays a list of upcoming events."
+msgstr ""
+
+msgid "No upcoming events found."
+msgstr ""
+
+msgid "Number of events to show:"
+msgstr ""
+
+msgid "Events Map"
+msgstr ""
+
+msgid "Displays a map with all events."
+msgstr ""
+
+msgid "Map Height (e.g. 300px):"
+msgstr ""
+
+# --------------------------------------------------------------
+# Templates
+# --------------------------------------------------------------
+
+msgid "Download ICS File"
+msgstr ""
+
+msgid "Group Events"
+msgstr ""
+
+msgid "No events found for this group."
+msgstr ""
+
+# --------------------------------------------------------------
+# ICS
+# --------------------------------------------------------------
+
+msgid "Unable to generate ICS file."
+msgstr ""
+
+# --------------------------------------------------------------
+# BuddyPress
+# --------------------------------------------------------------
+
+msgid "Events"
+msgstr ""
+
+msgid "Group Events"
+msgstr ""
+
+# --------------------------------------------------------------
+# Admin Settings
+# --------------------------------------------------------------
+
+msgid "BPGE Events Settings"
+msgstr ""
+
+msgid "General Settings"
+msgstr ""
+
+msgid "Default Marker Color"
+msgstr ""
+
+msgid "Enable Virtual Events"
+msgstr ""
+
+msgid "Enable City Auto-Geocoding"
+msgstr ""
+
+msgid "Choose the default color for map markers."
+msgstr ""
+
+msgid "Settings saved."
+msgstr ""
+
+# --------------------------------------------------------------
+# Maps
+# --------------------------------------------------------------
+
+msgid "Map"
+msgstr ""
+
+msgid "Invalid coordinates."
+msgstr ""
+
+# --------------------------------------------------------------
+# API
+# --------------------------------------------------------------
+
+msgid "Unauthorized."
+msgstr ""
+
+msgid "Event not found."
+msgstr ""
+
+msgid "No events available."
+msgstr ""
+
+# --------------------------------------------------------------
+# Misc
+# --------------------------------------------------------------
+
+msgid "Presential"
+msgstr ""
+
+msgid "Virtual"
+msgstr ""
