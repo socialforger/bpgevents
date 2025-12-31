@@ -1,50 +1,81 @@
 <?php
-/**
- * Single Event Template
- * This file overrides the single view for bpge_event
- */
-
 if ( ! defined( 'ABSPATH' ) ) exit;
-
 get_header();
-
-while ( have_posts() ) : the_post();
-
-    $event_id = get_the_ID();
 ?>
 
-<div class="bpgevents-single-event">
+<div id="primary" class="content-area bpge-single-event">
+    <main id="main" class="site-main">
 
-    <h1 class="bpgevents-title"><?php the_title(); ?></h1>
+        <?php while ( have_posts() ) : the_post(); ?>
 
-    <div class="bpgevents-meta-block">
-        <?php BPGEVENTS_Templates::render_event_meta( $event_id ); ?>
-    </div>
+            <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 
-    <div class="bpgevents-content">
-        <?php the_content(); ?>
-    </div>
+                <header class="entry-header">
+                    <h1 class="entry-title"><?php the_title(); ?></h1>
+                </header>
 
-    <div class="bpgevents-participation">
-        <?php BPGEVENTS_Templates::render_participation_button( $event_id ); ?>
-    </div>
+                <div class="entry-meta">
+                    <p class="bpge-location">
+                        <?php echo esc_html( BPGEVENTS_Utils::get_location_string( get_the_ID() ) ); ?>
+                    </p>
 
-    <div class="bpgevents-map-section">
-        <?php echo do_shortcode( '[bpgevents_event_map id="' . $event_id . '" height="350px"]' ); ?>
-    </div>
+                    <?php if ( BPGEVENTS_Utils::is_virtual( get_the_ID() ) ) : ?>
+                        <?php $url = BPGEVENTS_Utils::get_virtual_url( get_the_ID() ); ?>
+                        <?php if ( $url ) : ?>
+                            <p class="bpge-virtual-link">
+                                <a href="<?php echo esc_url( $url ); ?>" target="_blank" rel="noopener">
+                                    <?php _e( 'Join virtual event', 'bpgevents' ); ?>
+                                </a>
+                            </p>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </div>
 
-    <div class="bpgevents-ics-download">
-        <a class="bpgevents-ics-link"
-           href="<?php echo esc_url( add_query_arg( array(
-               'bpgevents_download_ics' => $event_id
-           ), home_url() ) ); ?>">
-            <?php _e( 'Download ICS File', 'bpgevents' ); ?>
-        </a>
-    </div>
+                <div class="entry-content">
+                    <?php the_content(); ?>
+                </div>
 
+                <footer class="entry-footer">
+                    <p class="bpge-participants-count">
+                        <?php
+                        $user_id = get_current_user_id();
+                        $joined  = get_user_meta( $user_id, '_bpge_joined_events', true );
+                        if ( ! is_array( $joined ) ) $joined = array();
+                        $count = count( $joined );
+                        printf( __( 'Participants: %d', 'bpgevents' ), $count );
+                        ?>
+                    </p>
+
+                    <?php
+                    // Pulsante join/leave base (puoi rifinirlo)
+                    if ( is_user_logged_in() ) {
+                        $joined = in_array( get_the_ID(), $joined, true );
+                        $class  = $joined ? 'bpge-leave-event' : 'bpge-join-event';
+                        $label  = $joined ? __( 'Leave Event', 'bpgevents' ) : __( 'Join Event', 'bpgevents' );
+                        echo '<button class="' . esc_attr( $class ) . '" data-event="' . get_the_ID() . '">'
+                             . esc_html( $label ) . '</button>';
+                    }
+                    ?>
+
+                    <p class="bpge-ics-download">
+                        <a href="<?php echo esc_url( add_query_arg( 'bpgevents_download_ics', get_the_ID() ) ); ?>">
+                            <?php _e( 'Download iCal file', 'bpgevents' ); ?>
+                        </a>
+                    </p>
+
+                    <?php
+                    // Mappa evento
+                    echo do_shortcode( '[bpgevents_map id="' . get_the_ID() . '"]' );
+                    ?>
+                </footer>
+
+            </article>
+
+        <?php endwhile; ?>
+
+    </main>
 </div>
 
 <?php
-endwhile;
-
+get_sidebar();
 get_footer();
