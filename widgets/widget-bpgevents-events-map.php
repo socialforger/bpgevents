@@ -24,7 +24,7 @@ class BPGEVENTS_Widget_Events_Map extends WP_Widget {
 
         echo '<div id="' . esc_attr( $map_id ) . '" class="bpge-map" style="height:' . esc_attr( $height ) . ';"></div>';
 
-        // Recupera tutti gli eventi con coordinate
+        // Get all events with coordinates
         $query = new WP_Query(array(
             'post_type'      => 'bpge_event',
             'posts_per_page' => -1,
@@ -38,15 +38,14 @@ class BPGEVENTS_Widget_Events_Map extends WP_Widget {
             if ( ! empty( $coords['lat'] ) && ! empty( $coords['lng'] ) ) {
                 $markers[] = array(
                     'title' => get_the_title( $post->ID ),
-                    'lat'   => $coords['lat'],
-                    'lng'   => $coords['lng'],
+                    'lat'   => (float) $coords['lat'],
+                    'lng'   => (float) $coords['lng'],
                     'url'   => get_permalink( $post->ID ),
                 );
             }
         }
 
         wp_reset_postdata();
-
         ?>
 
         <script>
@@ -58,18 +57,21 @@ class BPGEVENTS_Widget_Events_Map extends WP_Widget {
                 attribution: '&copy; OpenStreetMap contributors'
             }).addTo(map);
 
-            var markers = <?php echo json_encode( $markers ); ?>;
+            var markersData = <?php echo json_encode( $markers ); ?>;
 
-            markers.forEach(function(item){
-                var marker = L.marker([item.lat, item.lng]).addTo(map);
+            // Cluster group
+            var clusterGroup = L.markerClusterGroup();
+
+            markersData.forEach(function(item){
+                var marker = L.marker([item.lat, item.lng]);
                 marker.bindPopup('<a href="' + item.url + '">' + item.title + '</a>');
+                clusterGroup.addLayer(marker);
             });
 
-            if (markers.length > 0) {
-                var group = L.featureGroup(markers.map(function(m){
-                    return L.marker([m.lat, m.lng]);
-                }));
-                map.fitBounds(group.getBounds());
+            map.addLayer(clusterGroup);
+
+            if (markersData.length > 0) {
+                map.fitBounds(clusterGroup.getBounds());
             }
         });
         </script>
@@ -104,8 +106,8 @@ class BPGEVENTS_Widget_Events_Map extends WP_Widget {
 
     public function update( $new, $old ) {
         return array(
-            'title'  => sanitize_text_field( $new['title'] ),
-            'height' => sanitize_text_field( $new['height'] ),
+            'title'  => sanitize_text_field( $new['title'] ?? '' ),
+            'height' => sanitize_text_field( $new['height'] ?? '300px' ),
         );
     }
 }
