@@ -83,18 +83,31 @@ The plugin is fully translatable.
 **Folder Structure**
 
 bpgevents/
+
 │
+
 ├── admin/
+
 ├── assets/
+
 │   ├── css/
+
 │   └── js/
+
 ├── includes/
+
 │   ├── helpers/
+
 │   └── ...
+
 ├── shortcodes/
+
 ├── templates/
+
 ├── widgets/
+
 ├── languages/
+
 └── bpgevents.php
 
 **Autoloader**
