@@ -1,74 +1,52 @@
 <?php
-/**
- * Archive Template for bpge_event
- */
-
 if ( ! defined( 'ABSPATH' ) ) exit;
-
 get_header();
 ?>
 
-<div class="bpgevents-archive">
+<div id="primary" class="content-area bpge-archive-events">
+    <main id="main" class="site-main">
 
-    <h1 class="bpgevents-archive-title">
-        <?php _e( 'Events', 'bpgevents' ); ?>
-    </h1>
+        <header class="page-header">
+            <h1 class="page-title"><?php _e( 'Events', 'bpgevents' ); ?></h1>
+        </header>
 
-    <?php if ( have_posts() ) : ?>
+        <?php if ( have_posts() ) : ?>
 
-        <ul class="bpgevents-events-ul">
+            <div class="bpge-events-list">
 
-            <?php while ( have_posts() ) : the_post(); ?>
+                <?php while ( have_posts() ) : the_post(); ?>
 
-                <?php
-                $event_id   = get_the_ID();
-                $is_virtual = get_post_meta( $event_id, 'bpge_is_virtual', true );
-                $city       = get_post_meta( $event_id, 'bpge_city', true );
-                ?>
+                    <article id="post-<?php the_ID(); ?>" <?php post_class( 'bpge-event-box' ); ?>>
 
-                <li class="bpgevents-event-item">
+                        <h2 class="entry-title">
+                            <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                        </h2>
 
-                    <a class="bpgevents-event-title" href="<?php the_permalink(); ?>">
-                        <?php the_title(); ?>
-                    </a>
+                        <p class="bpge-location">
+                            <?php echo esc_html( BPGEVENTS_Utils::get_location_string( get_the_ID() ) ); ?>
+                        </p>
 
-                    <div class="bpgevents-event-meta">
+                        <div class="entry-excerpt">
+                            <?php the_excerpt(); ?>
+                        </div>
 
-                        <?php if ( $is_virtual ) : ?>
-                            <span class="bpgevents-tag bpgevents-tag-virtual">
-                                <?php _e( 'Virtual', 'bpgevents' ); ?>
-                            </span>
-                        <?php else : ?>
-                            <span class="bpgevents-tag bpgevents-tag-presential">
-                                <?php _e( 'Presential', 'bpgevents' ); ?>
-                            </span>
-                        <?php endif; ?>
+                    </article>
 
-                        <?php if ( $city ) : ?>
-                            <span class="bpgevents-city">
-                                <?php echo esc_html( $city ); ?>
-                            </span>
-                        <?php endif; ?>
+                <?php endwhile; ?>
 
-                    </div>
+            </div>
 
-                </li>
-
-            <?php endwhile; ?>
-
-        </ul>
-
-        <div class="bpgevents-pagination">
             <?php the_posts_pagination(); ?>
-        </div>
 
-    <?php else : ?>
+        <?php else : ?>
 
-        <p><?php _e( 'No events found.', 'bpgevents' ); ?></p>
+            <p><?php _e( 'No events found.', 'bpgevents' ); ?></p>
 
-    <?php endif; ?>
+        <?php endif; ?>
 
+    </main>
 </div>
 
 <?php
+get_sidebar();
 get_footer();
