@@ -22,12 +22,16 @@ spl_autoload_register( function( $class ) {
 
     if ( strpos( $name, 'utils' ) !== false || strpos( $name, 'ics' ) !== false ) {
         $file = $base . 'includes/helpers/class-bpgevents-' . $name . '.php';
+
     } elseif ( strpos( $name, 'settings' ) !== false ) {
         $file = $base . 'admin/class-bpgevents-' . $name . '.php';
+
     } elseif ( strpos( $name, 'widget' ) !== false ) {
         $file = $base . 'widgets/widget-bpgevents-' . $name . '.php';
+
     } elseif ( strpos( $name, 'shortcode' ) !== false ) {
         $file = $base . 'shortcodes/shortcode-bpgevents-' . $name . '.php';
+
     } else {
         $file = $base . 'includes/class-bpgevents-' . $name . '.php';
     }
@@ -66,12 +70,12 @@ class BPGEVENTS {
             new BPGEVENTS_Settings();
         }
 
-        // Shortcode
+        // Shortcodes
         new BPGEVENTS_Shortcode_Events_List();
         new BPGEVENTS_Shortcode_My_Events();
         new BPGEVENTS_Shortcode_Event_Map();
 
-        // Widget
+        // Widgets
         new BPGEVENTS_Widget_Upcoming_Events();
         new BPGEVENTS_Widget_Events_Map();
 
@@ -85,6 +89,9 @@ class BPGEVENTS {
         add_filter( 'template_include', array( $this, 'template_override' ) );
     }
 
+    /**
+     * Traduzioni
+     */
     public function load_textdomain() {
         load_plugin_textdomain(
             'bpgevents',
@@ -93,13 +100,43 @@ class BPGEVENTS {
         );
     }
 
+    /**
+     * Caricamento CSS/JS
+     */
     public function enqueue_assets() {
 
-        wp_enqueue_style( 'leaflet', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css', array(), '1.9.4' );
-        wp_enqueue_script( 'leaflet', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', array(), '1.9.4', true );
+        // Leaflet
+        wp_enqueue_style(
+            'leaflet',
+            'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
+            array(),
+            '1.9.4'
+        );
 
-        wp_enqueue_style( 'bpgevents-css', plugin_dir_url( __FILE__ ) . 'assets/css/bpgevents.css', array(), '1.0.0' );
-        wp_enqueue_script( 'bpgevents-js', plugin_dir_url( __FILE__ ) . 'assets/js/bpgevents.js', array(), '1.0.0', true );
+        wp_enqueue_script(
+            'leaflet',
+            'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
+            array(),
+            '1.9.4',
+            true
+        );
+
+        // Plugin CSS
+        wp_enqueue_style(
+            'bpgevents-css',
+            plugin_dir_url( __FILE__ ) . 'assets/css/bpgevents.css',
+            array(),
+            '1.0.0'
+        );
+
+        // Plugin JS
+        wp_enqueue_script(
+            'bpgevents-js',
+            plugin_dir_url( __FILE__ ) . 'assets/js/bpgevents.js',
+            array(),
+            '1.0.0',
+            true
+        );
 
         wp_localize_script( 'bpgevents-js', 'bpgevents_ajax', array(
             'ajax_url'           => admin_url( 'admin-ajax.php' ),
@@ -109,6 +146,9 @@ class BPGEVENTS {
         ) );
     }
 
+    /**
+     * ICS download
+     */
     public function handle_ics_download() {
         if ( isset( $_GET['bpgevents_download_ics'] ) ) {
             $event_id = intval( $_GET['bpgevents_download_ics'] );
@@ -116,6 +156,9 @@ class BPGEVENTS {
         }
     }
 
+    /**
+     * Template override
+     */
     public function template_override( $template ) {
 
         if ( is_singular( 'bpge_event' ) ) {
