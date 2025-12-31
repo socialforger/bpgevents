@@ -1,30 +1,147 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-class BPGEVENTS_Widget_Events_Map extends WP_Widget {
+/**
+ * Map utilities for BPGE Events
+ * Handles coordinates, validation, normalization, geocoding and marker generation.
+ */
+class BPGEVENTS_Maps {
+
+    /**
+     * Default fallback coordinates (Rome)
+     */
+    const DEFAULT_LAT = 41.9028;
+    const DEFAULT_LNG = 12.4964;
 
     public function __construct() {
-        parent::__construct(
-            'bpgevents_events_map',
-            __( 'Events Map', 'bpgevents' ),
-            array( 'description' => __( 'Displays a map with all events.', 'bpgevents' ) )
+        // Placeholder for future hooks (geocoding queue, caching, etc.)
+    }
+
+    /**
+     * Returns coordinates or fallback if missing
+     */
+    public static function get_coordinates_or_default( $post_id ) {
+
+        $coords = BPGEVENTS_Utils::get_coordinates( $post_id );
+
+        if ( self::is_valid_coordinates( $coords ) ) {
+            return $coords;
+        }
+
+        return array(
+            'lat' => self::DEFAULT_LAT,
+            'lng' => self::DEFAULT_LNG,
         );
     }
 
-    public function widget( $args, $instance ) {
+    /**
+     * Validate coordinates
+     */
+    public static function is_valid_coordinates( $coords ) {
 
-        echo $args['before_widget'];
-
-        if ( ! empty( $instance['title'] ) ) {
-            echo $args['before_title'] . esc_html( $instance['title'] ) . $args['after_title'];
+        if ( empty( $coords['lat'] ) || empty( $coords['lng'] ) ) {
+            return false;
         }
 
-        $height = $instance['height'] ?? '300px';
-        $map_id = 'bpge-map-widget-' . $this->id;
+        if ( ! is_numeric( $coords['lat'] ) || ! is_numeric( $coords['lng'] ) ) {
+            return false;
+        }
 
-        echo '<div id="' . esc_attr( $map_id ) . '" class="bpge-map" style="height:' . esc_attr( $height ) . ';"></div>';
+        if ( $coords['lat'] < -90 || $coords['lat'] > 90 ) {
+            return false;
+        }
 
-        // Get all events with coordinates
+        if ( $coords['lng'] < -180 || $coords['lng'] > 180 ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Normalize address string for geocoding or display
+     */
+    public static function normalize_address( $post_id ) {
+
+        if ( BPGEVENTS_Utils::is_virtual( $post_id ) ) {
+            return '';
+        }
+
+        $city     = get_post_meta( $post_id, '_bpge_city', true );
+        $address  = get_post_meta( $post_id, '_bpge_address', true );
+        $province = get_post_meta( $post_id, '_bpge_province', true );
+        $country  = get_post_meta( $post_id, '_bpge_country', true );
+
+        $parts = array_filter( array( $address, $city, $province, $country ) );
+
+        if ( empty( $parts ) ) {
+            return '';
+        }
+
+        return implode( ', ', $parts );
+    }
+
+    /**
+     * Geocode address using Nominatim (OpenStreetMap)
+     */
+    public static function geocode_address( $address ) {
+
+        if ( empty( $address ) ) {
+            return false;
+        }
+
+        $url = add_query_arg(array(
+            'q'      => urlencode( $address ),
+            'format' => 'json',
+            'limit'  => 1,
+        ), 'https://nominatim.openstreetmap.org/search');
+
+        $response = wp_remote_get( $url, array(
+            'timeout' => 10,
+            'headers' => array(
+                'User-Agent' => 'BPGE Events Plugin (WordPress)'
+            )
+        ));
+
+        if ( is_wp_error( $response ) ) {
+            return false;
+        }
+
+        $body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+        if ( empty( $body[0] ) ) {
+            return false;
+        }
+
+        return array(
+            'lat' => floatval( $body[0]['lat'] ),
+            'lng' => floatval( $body[0]['lon'] ),
+        );
+    }
+
+    /**
+     * Build marker data for JS maps
+     */
+    public static function get_marker_data( $post_id ) {
+
+        $coords = self::get_coordinates_or_default( $post_id );
+
+        return array(
+            'id'       => $post_id,
+            'title'    => get_the_title( $post_id ),
+            'url'      => get_permalink( $post_id ),
+            'lat'      => floatval( $coords['lat'] ),
+            'lng'      => floatval( $coords['lng'] ),
+            'virtual'  => BPGEVENTS_Utils::is_virtual( $post_id ),
+            'location' => BPGEVENTS_Utils::get_location_string( $post_id ),
+        );
+    }
+
+    /**
+     * Build marker list for all events
+     */
+    public static function get_all_markers() {
+
         $query = new WP_Query(array(
             'post_type'      => 'bpge_event',
             'posts_per_page' => -1,
@@ -33,81 +150,34 @@ class BPGEVENTS_Widget_Events_Map extends WP_Widget {
         $markers = array();
 
         foreach ( $query->posts as $post ) {
-            $coords = BPGEVENTS_Utils::get_coordinates( $post->ID );
-
-            if ( ! empty( $coords['lat'] ) && ! empty( $coords['lng'] ) ) {
-                $markers[] = array(
-                    'title' => get_the_title( $post->ID ),
-                    'lat'   => (float) $coords['lat'],
-                    'lng'   => (float) $coords['lng'],
-                    'url'   => get_permalink( $post->ID ),
-                );
-            }
+            $markers[] = self::get_marker_data( $post->ID );
         }
 
-        wp_reset_postdata();
-        ?>
-
-        <script>
-        document.addEventListener("DOMContentLoaded", function() {
-
-            var map = L.map("<?php echo esc_js( $map_id ); ?>").setView([0, 0], 2);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap contributors'
-            }).addTo(map);
-
-            var markersData = <?php echo json_encode( $markers ); ?>;
-
-            // Cluster group
-            var clusterGroup = L.markerClusterGroup();
-
-            markersData.forEach(function(item){
-                var marker = L.marker([item.lat, item.lng]);
-                marker.bindPopup('<a href="' + item.url + '">' + item.title + '</a>');
-                clusterGroup.addLayer(marker);
-            });
-
-            map.addLayer(clusterGroup);
-
-            if (markersData.length > 0) {
-                map.fitBounds(clusterGroup.getBounds());
-            }
-        });
-        </script>
-
-        <?php
-
-        echo $args['after_widget'];
+        return $markers;
     }
 
-    public function form( $instance ) {
+    /**
+     * Compute bounding box for map auto-fit
+     */
+    public static function get_bounds( $markers ) {
 
-        $title  = $instance['title'] ?? __( 'Events Map', 'bpgevents' );
-        $height = $instance['height'] ?? '300px';
-        ?>
+        if ( empty( $markers ) ) {
+            return array(
+                'min_lat' => self::DEFAULT_LAT,
+                'max_lat' => self::DEFAULT_LAT,
+                'min_lng' => self::DEFAULT_LNG,
+                'max_lng' => self::DEFAULT_LNG,
+            );
+        }
 
-        <p>
-            <label><?php _e( 'Title:', 'bpgevents' ); ?></label>
-            <input class="widefat" type="text"
-                   name="<?php echo $this->get_field_name('title'); ?>"
-                   value="<?php echo esc_attr( $title ); ?>">
-        </p>
+        $lats = array_column( $markers, 'lat' );
+        $lngs = array_column( $markers, 'lng' );
 
-        <p>
-            <label><?php _e( 'Map Height (e.g. 300px):', 'bpgevents' ); ?></label>
-            <input class="widefat" type="text"
-                   name="<?php echo $this->get_field_name('height'); ?>"
-                   value="<?php echo esc_attr( $height ); ?>">
-        </p>
-
-        <?php
-    }
-
-    public function update( $new, $old ) {
         return array(
-            'title'  => sanitize_text_field( $new['title'] ?? '' ),
-            'height' => sanitize_text_field( $new['height'] ?? '300px' ),
+            'min_lat' => min( $lats ),
+            'max_lat' => max( $lats ),
+            'min_lng' => min( $lngs ),
+            'max_lng' => max( $lngs ),
         );
     }
 }
