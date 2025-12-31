@@ -1,6 +1,9 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+/**
+ * Handles event meta fields (location, virtual, coordinates)
+ */
 class BPGEVENTS_Meta {
 
     public function __construct() {
@@ -8,6 +11,9 @@ class BPGEVENTS_Meta {
         add_action( 'save_post', array( $this, 'save' ) );
     }
 
+    /**
+     * Register meta box
+     */
     public function add_box() {
         add_meta_box(
             'bpgevents_details',
@@ -19,8 +25,12 @@ class BPGEVENTS_Meta {
         );
     }
 
+    /**
+     * Render meta box template
+     */
     public function render( $post ) {
 
+        // Retrieve stored values
         $is_virtual = get_post_meta( $post->ID, '_bpge_virtual', true );
         $city       = get_post_meta( $post->ID, '_bpge_city', true );
         $address    = get_post_meta( $post->ID, '_bpge_address', true );
@@ -30,13 +40,26 @@ class BPGEVENTS_Meta {
         $lat        = get_post_meta( $post->ID, '_bpge_lat', true );
         $lng        = get_post_meta( $post->ID, '_bpge_lng', true );
 
-        include plugin_dir_path( __FILE__ ) . '../templates/admin-meta-box.php';
+        // Include admin template
+        include plugin_dir_path( __FILE__ ) . '../templates/bpgevents-admin-meta-box.php';
     }
 
+    /**
+     * Save meta fields
+     */
     public function save( $post_id ) {
 
+        // Security check
         if ( ! isset( $_POST['bpge_event_nonce'] ) ) return;
+        if ( ! wp_verify_nonce( $_POST['bpge_event_nonce'], 'bpge_event_save' ) ) return;
 
+        // Prevent autosave overwrite
+        if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+
+        // Permissions
+        if ( ! current_user_can( 'edit_post', $post_id ) ) return;
+
+        // Save fields
         update_post_meta( $post_id, '_bpge_virtual',      isset($_POST['bpge_virtual']) ? 1 : 0 );
         update_post_meta( $post_id, '_bpge_city',         sanitize_text_field($_POST['bpge_city'] ?? '') );
         update_post_meta( $post_id, '_bpge_address',      sanitize_text_field($_POST['bpge_address'] ?? '') );
