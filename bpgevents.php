@@ -7,7 +7,9 @@
  * Text Domain: bpgevents
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
 
 final class BPGEVENTS_Plugin {
 
@@ -37,7 +39,9 @@ final class BPGEVENTS_Plugin {
     private function __construct() {
         $this->define_constants();
         $this->load_textdomain();
-        $this->register_autoloader();
+
+        // Niente autoloader: includiamo tutto a mano.
+        $this->include_files();
 
         add_action( 'plugins_loaded', array( $this, 'init' ) );
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
@@ -66,33 +70,65 @@ final class BPGEVENTS_Plugin {
     }
 
     /**
-     * Simple PSR-4-like autoloader for plugin classes
+     * Include all required plugin files (no autoloader).
      */
-    private function register_autoloader() {
-        spl_autoload_register( function ( $class ) {
+    private function include_files() {
 
-            if ( strpos( $class, 'BPGEVENTS_' ) !== 0 ) {
-                return;
+        // Core includes.
+        $core_files = array(
+            'includes/class-bpgevents-cpt.php',
+            'includes/class-bpgevents-meta.php',
+            'includes/class-bpgevents-maps.php',
+            'includes/class-bpgevents-permissions.php',
+            'includes/class-bpgevents-participation.php',
+            'includes/class-bpgevents-api.php',
+            'includes/class-bpgevents-api-my-events.php',
+            'includes/class-bpgevents-notifications.php',
+            'includes/class-bpgevents-markers.php',
+            'includes/class-bpgevents-templates.php',
+        );
+
+        // BuddyPress/BuddyBoss integration (if file exists).
+        $bp_file = 'includes/class-bpgevents-bp.php';
+
+        // Admin.
+        $admin_files = array(
+            'admin/class-bpgevents-settings.php',
+        );
+
+        // Shortcodes.
+        $shortcode_files = array(
+            'shortcodes/shortcode-bpgevents-events-list.php',
+            'shortcodes/shortcode-bpgevents-my-events.php',
+            'shortcodes/shortcode-bpgevents-event-map.php',
+        );
+
+        // Widgets.
+        $widget_files = array(
+            'widgets/widget-bpgevents-upcoming-events.php',
+            'widgets/widget-bpgevents-events-map.php',
+        );
+
+        $all_files = array_merge(
+            $core_files,
+            $admin_files,
+            $shortcode_files,
+            $widget_files
+        );
+
+        // Include core/admin/shortcodes/widgets.
+        foreach ( $all_files as $relative_path ) {
+            $file = BPGEVENTS_PLUGIN_DIR . $relative_path;
+            if ( file_exists( $file ) ) {
+                require_once $file;
             }
+        }
 
-            $class_slug = strtolower( str_replace( 'BPGEVENTS_', '', $class ) );
-            $class_slug = str_replace( '_', '-', $class_slug );
-
-            $paths = array(
-                BPGEVENTS_PLUGIN_DIR . 'includes/class-bpgevents-' . $class_slug . '.php',
-                BPGEVENTS_PLUGIN_DIR . 'includes/helpers/class-bpgevents-' . $class_slug . '.php',
-                BPGEVENTS_PLUGIN_DIR . 'admin/class-bpgevents-' . $class_slug . '.php',
-                BPGEVENTS_PLUGIN_DIR . 'shortcodes/shortcode-bpgevents-' . $class_slug . '.php',
-                BPGEVENTS_PLUGIN_DIR . 'widgets/widget-bpgevents-' . $class_slug . '.php',
-            );
-
-            foreach ( $paths as $file ) {
-                if ( file_exists( $file ) ) {
-                    include $file;
-                    return;
-                }
-            }
-        } );
+        // Include BP integration only if il file esiste.
+        $bp_full = BPGEVENTS_PLUGIN_DIR . $bp_file;
+        if ( file_exists( $bp_full ) ) {
+            require_once $bp_full;
+        }
     }
 
     /**
@@ -100,36 +136,77 @@ final class BPGEVENTS_Plugin {
      */
     public function init() {
 
-        // Core
-        new BPGEVENTS_CPT();
-        new BPGEVENTS_Meta();
-        new BPGEVENTS_Maps();
-        new BPGEVENTS_Permissions();
-        new BPGEVENTS_Participation();
-        new BPGEVENTS_API();
-        new BPGEVENTS_API_My_Events();
-        new BPGEVENTS_Notifications();
-        new BPGEVENTS_Markers();
-        new BPGEVENTS_Templates();
+        // Core.
+        if ( class_exists( 'BPGEVENTS_CPT' ) ) {
+            new BPGEVENTS_CPT();
+        }
 
-        // Admin
-        if ( is_admin() ) {
+        if ( class_exists( 'BPGEVENTS_Meta' ) ) {
+            new BPGEVENTS_Meta();
+        }
+
+        if ( class_exists( 'BPGEVENTS_Maps' ) ) {
+            new BPGEVENTS_Maps();
+        }
+
+        if ( class_exists( 'BPGEVENTS_Permissions' ) ) {
+            new BPGEVENTS_Permissions();
+        }
+
+        if ( class_exists( 'BPGEVENTS_Participation' ) ) {
+            new BPGEVENTS_Participation();
+        }
+
+        if ( class_exists( 'BPGEVENTS_API' ) ) {
+            new BPGEVENTS_API();
+        }
+
+        if ( class_exists( 'BPGEVENTS_API_My_Events' ) ) {
+            new BPGEVENTS_API_My_Events();
+        }
+
+        if ( class_exists( 'BPGEVENTS_Notifications' ) ) {
+            new BPGEVENTS_Notifications();
+        }
+
+        if ( class_exists( 'BPGEVENTS_Markers' ) ) {
+            new BPGEVENTS_Markers();
+        }
+
+        if ( class_exists( 'BPGEVENTS_Templates' ) ) {
+            new BPGEVENTS_Templates();
+        }
+
+        // Admin.
+        if ( is_admin() && class_exists( 'BPGEVENTS_Settings' ) ) {
             new BPGEVENTS_Settings();
         }
 
-        // Shortcodes
-        new BPGEVENTS_Shortcode_Events_List();
-        new BPGEVENTS_Shortcode_My_Events();
-        new BPGEVENTS_Shortcode_Event_Map();
+        // Shortcodes.
+        if ( class_exists( 'BPGEVENTS_Shortcode_Events_List' ) ) {
+            new BPGEVENTS_Shortcode_Events_List();
+        }
 
-        // Widgets
+        if ( class_exists( 'BPGEVENTS_Shortcode_My_Events' ) ) {
+            new BPGEVENTS_Shortcode_My_Events();
+        }
+
+        if ( class_exists( 'BPGEVENTS_Shortcode_Event_Map' ) ) {
+            new BPGEVENTS_Shortcode_Event_Map();
+        }
+
+        // Widgets.
         add_action( 'widgets_init', function () {
-            register_widget( 'BPGEVENTS_Widget_Upcoming_Events' );
-            register_widget( 'BPGEVENTS_Widget_Events_Map' );
+            if ( class_exists( 'BPGEVENTS_Widget_Upcoming_Events' ) ) {
+                register_widget( 'BPGEVENTS_Widget_Upcoming_Events' );
+            }
+            if ( class_exists( 'BPGEVENTS_Widget_Events_Map' ) ) {
+                register_widget( 'BPGEVENTS_Widget_Events_Map' );
+            }
         } );
 
-        // BuddyPress integration (if available)
-        if ( function_exists( 'buddypress' ) ) {
+        // BuddyPress integration (if available and class exists).
+        if ( function_exists( 'buddypress' ) && class_exists( 'BPGEVENTS_BP' ) ) {
             new BPGEVENTS_BP();
         }
     }
@@ -139,7 +216,7 @@ final class BPGEVENTS_Plugin {
      */
     public function enqueue_assets() {
 
-        // Leaflet core
+        // Leaflet core.
         wp_enqueue_style(
             'leaflet',
             'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
@@ -155,7 +232,7 @@ final class BPGEVENTS_Plugin {
             true
         );
 
-        // Leaflet MarkerCluster
+        // Leaflet MarkerCluster.
         wp_enqueue_style(
             'leaflet-markercluster',
             'https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css',
@@ -178,7 +255,7 @@ final class BPGEVENTS_Plugin {
             true
         );
 
-        // Plugin CSS
+        // Plugin CSS.
         wp_enqueue_style(
             'bpgevents',
             BPGEVENTS_PLUGIN_URL . 'assets/css/bpgevents.css',
@@ -186,7 +263,7 @@ final class BPGEVENTS_Plugin {
             BPGEVENTS_PLUGIN_VERSION
         );
 
-        // Plugin JS
+        // Plugin JS.
         wp_enqueue_script(
             'bpgevents',
             BPGEVENTS_PLUGIN_URL . 'assets/js/bpgevents.js',
@@ -195,10 +272,14 @@ final class BPGEVENTS_Plugin {
             true
         );
 
-        wp_localize_script( 'bpgevents', 'BPGEVENTS', array(
-            'ajax_url' => admin_url( 'admin-ajax.php' ),
-            'nonce'    => wp_create_nonce( 'bpgevents_nonce' ),
-        ) );
+        wp_localize_script(
+            'bpgevents',
+            'BPGEVENTS',
+            array(
+                'ajax_url' => admin_url( 'admin-ajax.php' ),
+                'nonce'    => wp_create_nonce( 'bpgevents_nonce' ),
+            )
+        );
     }
 
     /**
