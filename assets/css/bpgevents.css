@@ -1,150 +1,51 @@
-/* --------------------------------------------------------------
-   BPGE Events – Base Styles
--------------------------------------------------------------- */
-
-.bpgevents-events-list,
-.bpgevents-my-events,
-.bpgevents-group-events,
-.bpgevents-upcoming-events,
-.bpgevents-map-widget {
-    font-family: inherit;
-    line-height: 1.5;
+/* GENERAL */
+.bpge-event-box {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    background: #fff;
 }
 
-/* --------------------------------------------------------------
-   Event List Items
--------------------------------------------------------------- */
-
-.bpgevents-events-ul,
-.bpgevents-my-events-ul,
-.bpgevents-group-events-list,
-.bpgevents-upcoming-events {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.bpgevents-event-item,
-.bpgevents-my-event-item,
-.bpgevents-group-event-item,
-.bpgevents-upcoming-event-item {
-    padding: 10px 0;
-    border-bottom: 1px solid #e5e5e5;
-}
-
-.bpgevents-event-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #0073aa;
-    text-decoration: none;
-}
-
-.bpgevents-event-title:hover {
-    text-decoration: underline;
-}
-
-/* --------------------------------------------------------------
-   Tags (Virtual / Presential)
--------------------------------------------------------------- */
-
-.bpgevents-tag {
-    display: inline-block;
-    padding: 2px 6px;
-    margin-right: 6px;
-    border-radius: 3px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #fff;
-}
-
-.bpgevents-tag-virtual {
-    background: #6a5acd;
-}
-
-.bpgevents-tag-presential {
-    background: #2d9c3c;
-}
-
-.bpgevents-city {
-    font-size: 0.85rem;
-    color: #555;
-}
-
-/* --------------------------------------------------------------
-   Participation Button
--------------------------------------------------------------- */
-
-.bpgevents-participation-btn {
+/* BUTTONS */
+.bpge-join-event,
+.bpge-leave-event {
     display: inline-block;
     padding: 8px 14px;
-    background: #0073aa;
-    color: #fff;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 0.9rem;
-}
-
-.bpgevents-participation-btn:hover {
-    background: #005f8d;
-}
-
-.bpgevents-participants-count {
-    margin-top: 6px;
-    font-size: 0.85rem;
-    color: #444;
-}
-
-/* --------------------------------------------------------------
-   Meta Block (Single Event)
--------------------------------------------------------------- */
-
-.bpgevents-meta p {
-    margin: 4px 0;
-    font-size: 0.9rem;
-}
-
-/* --------------------------------------------------------------
-   Group Events Page
--------------------------------------------------------------- */
-
-.bpgevents-group-events h2 {
-    margin-bottom: 15px;
-}
-
-.bpgevents-group-event-meta {
-    margin-top: 4px;
-}
-
-/* --------------------------------------------------------------
-   Widgets
--------------------------------------------------------------- */
-
-.bpgevents-upcoming-events a {
-    color: #0073aa;
-    text-decoration: none;
-}
-
-.bpgevents-upcoming-events a:hover {
-    text-decoration: underline;
-}
-
-/* --------------------------------------------------------------
-   Maps
--------------------------------------------------------------- */
-
-.bpgevents-event-map,
-.bpgevents-map-widget {
-    border: 1px solid #ddd;
     border-radius: 4px;
-    overflow: hidden;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
 }
 
-/* --------------------------------------------------------------
-   Admin Notices / Messages
--------------------------------------------------------------- */
+.bpge-join-event {
+    background: #2d8cff;
+    color: #fff;
+}
 
-.bpgevents-login-msg {
-    font-size: 0.9rem;
-    color: #666;
+.bpge-leave-event {
+    background: #ff4d4d;
+    color: #fff;
+}
+
+.bpge-join-event.loading,
+.bpge-leave-event.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* MAP */
+.bpge-map {
+    width: 100%;
+    height: 300px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 15px;
+}
+
+/* PARTICIPANTS */
+.bpge-participants-count {
+    font-weight: bold;
+    margin-top: 10px;
+    display: inline-block;
 }
