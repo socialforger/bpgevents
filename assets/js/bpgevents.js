@@ -1,76 +1,76 @@
 (function($){
 
     /**
-     * JOIN / LEAVE EVENT (AJAX)
+     * Init single event map (if needed)
      */
-    $(document).on('click', '.bpge-join-event, .bpge-leave-event', function(e){
-        e.preventDefault();
+    window.BPGE_init_map = function(mapId, lat, lng, zoom, markerIcon, markerShadow) {
 
-        var button = $(this);
-        var eventID = button.data('event');
+        if (typeof L === 'undefined') {
+            return;
+        }
 
-        $.ajax({
-            url: bpgevents_ajax.ajax_url,
-            type: 'POST',
-            data: {
-                action: 'bpgevents_toggle_participation',
-                event_id: eventID
-            },
-            beforeSend: function(){
-                button.addClass('loading');
-            },
-            success: function(response){
-
-                button.removeClass('loading');
-
-                if (!response || !response.success) return;
-
-                // Update button label
-                if (response.data.joined) {
-                    button.removeClass('bpge-join-event')
-                          .addClass('bpge-leave-event')
-                          .text(bpgevents_ajax.leave_label);
-                } else {
-                    button.removeClass('bpge-leave-event')
-                          .addClass('bpge-join-event')
-                          .text(bpgevents_ajax.join_label);
-                }
-
-                // Update participants count
-                if (response.data.participants !== undefined) {
-                    $('.bpge-participants-count').text(
-                        bpgevents_ajax.participants_label.replace('%d', response.data.participants)
-                    );
-                }
-            }
-        });
-    });
-
-
-    /**
-     * LEAFLET MAP INITIALIZATION
-     */
-    window.BPGE_init_map = function(containerID, lat, lng, zoom, markerIconURL, shadowURL) {
-
-        if (!document.getElementById(containerID)) return;
-
-        var map = L.map(containerID).setView([lat, lng], zoom);
+        var map = L.map(mapId).setView([lat, lng], zoom || 14);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
-        var icon = L.icon({
-            iconUrl: markerIconURL,
-            shadowUrl: shadowURL,
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            shadowSize: [41, 41]
-        });
+        var markerOptions = {};
 
-        L.marker([lat, lng], { icon: icon }).addTo(map);
+        if (markerIcon) {
+            markerOptions.icon = L.icon({
+                iconUrl: markerIcon,
+                shadowUrl: markerShadow || '',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            });
+        }
+
+        L.marker([lat, lng], markerOptions).addTo(map);
 
         return map;
     };
+
+    /**
+     * Init cluster map for multiple markers
+     */
+    window.BPGE_init_cluster_map = function(mapId, markers, tileLayerUrl) {
+
+        if (typeof L === 'undefined' || typeof L.markerClusterGroup === 'undefined') {
+            return;
+        }
+
+        var map = L.map(mapId).setView([0, 0], 2);
+
+        L.tileLayer(tileLayerUrl || 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        var clusterGroup = L.markerClusterGroup();
+
+        markers.forEach(function(item){
+            var marker = L.marker([item.lat, item.lng]);
+            marker.bindPopup('<a href="' + item.url + '">' + item.title + '</a>');
+            clusterGroup.addLayer(marker);
+        });
+
+        map.addLayer(clusterGroup);
+
+        if (markers.length > 0) {
+            map.fitBounds(clusterGroup.getBounds());
+        }
+
+        return map;
+    };
+
+    /**
+     * Placeholder for future AJAX join/leave handlers, etc.
+     */
+    $(document).on('click', '.bpge-join-event, .bpge-leave-event', function(e){
+        e.preventDefault();
+        // Qui potrai inserire la logica di partecipazione via AJAX
+    });
 
 })(jQuery);
