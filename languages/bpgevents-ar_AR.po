@@ -1,0 +1,240 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Buddypress Groups Events 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bpgevents\n"
+"Language: ar_AR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: bpgevents\n"
+
+# --------------------------------------------------------------
+# CPT
+# --------------------------------------------------------------
+
+msgid "Event"
+msgstr "فعالية"
+
+msgid "Events"
+msgstr "فعاليات"
+
+msgid "Add New Event"
+msgstr "إضافة فعالية جديدة"
+
+msgid "Edit Event"
+msgstr "تعديل الفعالية"
+
+msgid "New Event"
+msgstr "فعالية جديدة"
+
+msgid "View Event"
+msgstr "عرض الفعالية"
+
+msgid "Search Events"
+msgstr "البحث عن فعاليات"
+
+msgid "No events found."
+msgstr "لم يتم العثور على فعاليات."
+
+msgid "No events found in Trash."
+msgstr "لا توجد فعاليات في سلة المهملات."
+
+msgid "All Events"
+msgstr "جميع الفعاليات"
+
+# --------------------------------------------------------------
+# Meta Fields
+# --------------------------------------------------------------
+
+msgid "Event Details"
+msgstr "تفاصيل الفعالية"
+
+msgid "Virtual Event"
+msgstr "فعالية افتراضية"
+
+msgid "Presential Event"
+msgstr "فعالية حضورية"
+
+msgid "Is this a virtual event?"
+msgstr "هل هذه فعالية افتراضية؟"
+
+msgid "City"
+msgstr "المدينة"
+
+msgid "Address"
+msgstr "العنوان"
+
+msgid "Province"
+msgstr "المحافظة"
+
+msgid "Country"
+msgstr "الدولة"
+
+msgid "Virtual Event URL"
+msgstr "رابط الفعالية الافتراضية"
+
+msgid "Latitude"
+msgstr "خط العرض"
+
+msgid "Longitude"
+msgstr "خط الطول"
+
+msgid "Save Event"
+msgstr "حفظ الفعالية"
+
+# --------------------------------------------------------------
+# Participation
+# --------------------------------------------------------------
+
+msgid "Join Event"
+msgstr "الانضمام إلى الفعالية"
+
+msgid "Leave Event"
+msgstr "مغادرة الفعالية"
+
+msgid "Participants: %d"
+msgstr "عدد المشاركين: %d"
+
+msgid "You must be logged in to join this event."
+msgstr "يجب تسجيل الدخول للانضمام إلى هذه الفعالية."
+
+msgid "Invalid event."
+msgstr "فعالية غير صالحة."
+
+msgid "You have joined the event."
+msgstr "لقد انضممت إلى الفعالية."
+
+msgid "You have left the event."
+msgstr "لقد غادرت الفعالية."
+
+# --------------------------------------------------------------
+# Shortcodes
+# --------------------------------------------------------------
+
+msgid "My Events"
+msgstr "فعالياتي"
+
+msgid "You must be logged in to view your events."
+msgstr "يجب تسجيل الدخول لعرض فعالياتك."
+
+msgid "You have not created any events yet."
+msgstr "لم تقم بإنشاء أي فعاليات بعد."
+
+msgid "Invalid event ID."
+msgstr "معرّف الفعالية غير صالح."
+
+msgid "This event does not have valid map coordinates."
+msgstr "هذه الفعالية لا تحتوي على إحداثيات صالحة للخريطة."
+
+# --------------------------------------------------------------
+# Widgets
+# --------------------------------------------------------------
+
+msgid "Upcoming Events"
+msgstr "الفعاليات القادمة"
+
+msgid "Displays a list of upcoming events."
+msgstr "يعرض قائمة بالفعاليات القادمة."
+
+msgid "No upcoming events found."
+msgstr "لا توجد فعاليات قادمة."
+
+msgid "Number of events to show:"
+msgstr "عدد الفعاليات المعروضة:"
+
+msgid "Events Map"
+msgstr "خريطة الفعاليات"
+
+msgid "Displays a map with all events."
+msgstr "يعرض خريطة تحتوي على جميع الفعاليات."
+
+msgid "Map Height (e.g. 300px):"
+msgstr "ارتفاع الخريطة (مثال: 300px):"
+
+# --------------------------------------------------------------
+# Templates
+# --------------------------------------------------------------
+
+msgid "Download ICS File"
+msgstr "تنزيل ملف ICS"
+
+msgid "Group Events"
+msgstr "فعاليات المجموعة"
+
+msgid "No events found for this group."
+msgstr "لا توجد فعاليات لهذه المجموعة."
+
+# --------------------------------------------------------------
+# ICS
+# --------------------------------------------------------------
+
+msgid "Unable to generate ICS file."
+msgstr "تعذّر إنشاء ملف ICS."
+
+# --------------------------------------------------------------
+# BuddyPress
+# --------------------------------------------------------------
+
+msgid "Events"
+msgstr "فعاليات"
+
+msgid "Group Events"
+msgstr "فعاليات المجموعة"
+
+# --------------------------------------------------------------
+# Admin Settings
+# --------------------------------------------------------------
+
+msgid "BPGE Events Settings"
+msgstr "إعدادات BPGE Events"
+
+msgid "General Settings"
+msgstr "الإعدادات العامة"
+
+msgid "Default Marker Color"
+msgstr "اللون الافتراضي للعلامة"
+
+msgid "Enable Virtual Events"
+msgstr "تفعيل الفعاليات الافتراضية"
+
+msgid "Enable City Auto-Geocoding"
+msgstr "تفعيل التحديد الجغرافي التلقائي للمدينة"
+
+msgid "Choose the default color for map markers."
+msgstr "اختر اللون الافتراضي لعلامات الخريطة."
+
+msgid "Settings saved."
+msgstr "تم حفظ الإعدادات."
+
+# --------------------------------------------------------------
+# Maps
+# --------------------------------------------------------------
+
+msgid "Map"
+msgstr "الخريطة"
+
+msgid "Invalid coordinates."
+msgstr "إحداثيات غير صالحة."
+
+# --------------------------------------------------------------
+# API
+# --------------------------------------------------------------
+
+msgid "Unauthorized."
+msgstr "غير مصرح."
+
+msgid "Event not found."
+msgstr "لم يتم العثور على الفعالية."
+
+msgid "No events available."
+msgstr "لا توجد فعاليات متاحة."
+
+# --------------------------------------------------------------
+# Misc
+# --------------------------------------------------------------
+
+msgid "Presential"
+msgstr "حضوري"
+
+msgid "Virtual"
+msgstr "افتراضي"
