@@ -1,0 +1,240 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Buddypress Groups Events 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bpgevents\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: bpgevents\n"
+
+# --------------------------------------------------------------
+# CPT
+# --------------------------------------------------------------
+
+msgid "Event"
+msgstr "活动"
+
+msgid "Events"
+msgstr "活动"
+
+msgid "Add New Event"
+msgstr "添加新活动"
+
+msgid "Edit Event"
+msgstr "编辑活动"
+
+msgid "New Event"
+msgstr "新活动"
+
+msgid "View Event"
+msgstr "查看活动"
+
+msgid "Search Events"
+msgstr "搜索活动"
+
+msgid "No events found."
+msgstr "未找到活动。"
+
+msgid "No events found in Trash."
+msgstr "回收站中没有活动。"
+
+msgid "All Events"
+msgstr "所有活动"
+
+# --------------------------------------------------------------
+# Meta Fields
+# --------------------------------------------------------------
+
+msgid "Event Details"
+msgstr "活动详情"
+
+msgid "Virtual Event"
+msgstr "线上活动"
+
+msgid "Presential Event"
+msgstr "线下活动"
+
+msgid "Is this a virtual event?"
+msgstr "这是线上活动吗？"
+
+msgid "City"
+msgstr "城市"
+
+msgid "Address"
+msgstr "地址"
+
+msgid "Province"
+msgstr "省份"
+
+msgid "Country"
+msgstr "国家"
+
+msgid "Virtual Event URL"
+msgstr "线上活动链接"
+
+msgid "Latitude"
+msgstr "纬度"
+
+msgid "Longitude"
+msgstr "经度"
+
+msgid "Save Event"
+msgstr "保存活动"
+
+# --------------------------------------------------------------
+# Participation
+# --------------------------------------------------------------
+
+msgid "Join Event"
+msgstr "参加活动"
+
+msgid "Leave Event"
+msgstr "退出活动"
+
+msgid "Participants: %d"
+msgstr "参与人数：%d"
+
+msgid "You must be logged in to join this event."
+msgstr "您必须登录才能参加此活动。"
+
+msgid "Invalid event."
+msgstr "无效的活动。"
+
+msgid "You have joined the event."
+msgstr "您已加入该活动。"
+
+msgid "You have left the event."
+msgstr "您已退出该活动。"
+
+# --------------------------------------------------------------
+# Shortcodes
+# --------------------------------------------------------------
+
+msgid "My Events"
+msgstr "我的活动"
+
+msgid "You must be logged in to view your events."
+msgstr "您必须登录才能查看您的活动。"
+
+msgid "You have not created any events yet."
+msgstr "您尚未创建任何活动。"
+
+msgid "Invalid event ID."
+msgstr "无效的活动 ID。"
+
+msgid "This event does not have valid map coordinates."
+msgstr "此活动没有有效的地图坐标。"
+
+# --------------------------------------------------------------
+# Widgets
+# --------------------------------------------------------------
+
+msgid "Upcoming Events"
+msgstr "即将举行的活动"
+
+msgid "Displays a list of upcoming events."
+msgstr "显示即将举行的活动列表。"
+
+msgid "No upcoming events found."
+msgstr "未找到即将举行的活动。"
+
+msgid "Number of events to show:"
+msgstr "显示的活动数量："
+
+msgid "Events Map"
+msgstr "活动地图"
+
+msgid "Displays a map with all events."
+msgstr "显示包含所有活动的地图。"
+
+msgid "Map Height (e.g. 300px):"
+msgstr "地图高度（例如 300px）："
+
+# --------------------------------------------------------------
+# Templates
+# --------------------------------------------------------------
+
+msgid "Download ICS File"
+msgstr "下载 ICS 文件"
+
+msgid "Group Events"
+msgstr "群组活动"
+
+msgid "No events found for this group."
+msgstr "未找到该群组的活动。"
+
+# --------------------------------------------------------------
+# ICS
+# --------------------------------------------------------------
+
+msgid "Unable to generate ICS file."
+msgstr "无法生成 ICS 文件。"
+
+# --------------------------------------------------------------
+# BuddyPress
+# --------------------------------------------------------------
+
+msgid "Events"
+msgstr "活动"
+
+msgid "Group Events"
+msgstr "群组活动"
+
+# --------------------------------------------------------------
+# Admin Settings
+# --------------------------------------------------------------
+
+msgid "BPGE Events Settings"
+msgstr "BPGE 活动设置"
+
+msgid "General Settings"
+msgstr "常规设置"
+
+msgid "Default Marker Color"
+msgstr "默认标记颜色"
+
+msgid "Enable Virtual Events"
+msgstr "启用线上活动"
+
+msgid "Enable City Auto-Geocoding"
+msgstr "启用城市自动地理编码"
+
+msgid "Choose the default color for map markers."
+msgstr "选择地图标记的默认颜色。"
+
+msgid "Settings saved."
+msgstr "设置已保存。"
+
+# --------------------------------------------------------------
+# Maps
+# --------------------------------------------------------------
+
+msgid "Map"
+msgstr "地图"
+
+msgid "Invalid coordinates."
+msgstr "无效的坐标。"
+
+# --------------------------------------------------------------
+# API
+# --------------------------------------------------------------
+
+msgid "Unauthorized."
+msgstr "未授权。"
+
+msgid "Event not found."
+msgstr "未找到活动。"
+
+msgid "No events available."
+msgstr "没有可用的活动。"
+
+# --------------------------------------------------------------
+# Misc
+# --------------------------------------------------------------
+
+msgid "Presential"
+msgstr "线下"
+
+msgid "Virtual"
+msgstr "线上"
