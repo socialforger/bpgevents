@@ -9,66 +9,108 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-/**
- * Autoloader PSR‑4
- */
-spl_autoload_register( function( $class ) {
+final class BPGEVENTS_Plugin {
 
-    if ( strpos( $class, 'BPGEVENTS_' ) !== 0 ) return;
+    /**
+     * Singleton instance
+     */
+    private static $instance = null;
 
-    $base = plugin_dir_path( __FILE__ );
-    $name = strtolower( str_replace( 'BPGEVENTS_', '', $class ) );
-    $name = str_replace( '_', '-', $name );
+    /**
+     * Plugin version
+     */
+    const VERSION = '1.0.0';
 
-    // Helpers
-    if ( strpos( $name, 'utils' ) !== false || strpos( $name, 'ics' ) !== false ) {
-        $file = $base . 'includes/helpers/class-bpgevents-' . $name . '.php';
-
-    // Admin
-    } elseif ( strpos( $name, 'settings' ) !== false ) {
-        $file = $base . 'admin/class-bpgevents-' . $name . '.php';
-
-    // Widgets
-    } elseif ( strpos( $name, 'widget' ) !== false ) {
-        $file = $base . 'widgets/widget-bpgevents-' . $name . '.php';
-
-    // Shortcodes
-    } elseif ( strpos( $name, 'shortcode' ) !== false ) {
-        $file = $base . 'shortcodes/shortcode-bpgevents-' . $name . '.php';
-
-    // Core
-    } else {
-        $file = $base . 'includes/class-bpgevents-' . $name . '.php';
+    /**
+     * Get instance
+     */
+    public static function instance() {
+        if ( null === self::$instance ) {
+            self::$instance = new self();
+        }
+        return self::$instance;
     }
 
-    if ( file_exists( $file ) ) require_once $file;
-});
+    /**
+     * Constructor
+     */
+    private function __construct() {
+        $this->define_constants();
+        $this->load_textdomain();
+        $this->register_autoloader();
 
-/**
- * Classe principale
- */
-class BPGEVENTS {
+        add_action( 'plugins_loaded', array( $this, 'init' ) );
+        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
+    }
 
-    public function __construct() {
+    /**
+     * Define plugin constants
+     */
+    private function define_constants() {
+        define( 'BPGEVENTS_PLUGIN_FILE', __FILE__ );
+        define( 'BPGEVENTS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+        define( 'BPGEVENTS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+        define( 'BPGEVENTS_PLUGIN_VERSION', self::VERSION );
+    }
 
-        add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
+    /**
+     * Load textdomain
+     */
+    private function load_textdomain() {
+        load_plugin_textdomain(
+            'bpgevents',
+            false,
+            dirname( plugin_basename( __FILE__ ) ) . '/languages/'
+        );
+    }
+
+    /**
+     * Simple PSR-4-like autoloader for plugin classes
+     */
+    private function register_autoloader() {
+        spl_autoload_register( function ( $class ) {
+
+            if ( strpos( $class, 'BPGEVENTS_' ) !== 0 ) {
+                return;
+            }
+
+            $class_slug = strtolower( str_replace( 'BPGEVENTS_', '', $class ) );
+            $class_slug = str_replace( '_', '-', $class_slug );
+
+            $paths = array(
+                BPGEVENTS_PLUGIN_DIR . 'includes/class-bpgevents-' . $class_slug . '.php',
+                BPGEVENTS_PLUGIN_DIR . 'includes/helpers/class-bpgevents-' . $class_slug . '.php',
+                BPGEVENTS_PLUGIN_DIR . 'admin/class-bpgevents-' . $class_slug . '.php',
+                BPGEVENTS_PLUGIN_DIR . 'shortcodes/shortcode-bpgevents-' . $class_slug . '.php',
+                BPGEVENTS_PLUGIN_DIR . 'widgets/widget-bpgevents-' . $class_slug . '.php',
+            );
+
+            foreach ( $paths as $file ) {
+                if ( file_exists( $file ) ) {
+                    include $file;
+                    return;
+                }
+            }
+        } );
+    }
+
+    /**
+     * Init plugin components
+     */
+    public function init() {
 
         // Core
         new BPGEVENTS_CPT();
         new BPGEVENTS_Meta();
         new BPGEVENTS_Maps();
-        new BPGEVENTS_API();
-        new BPGEVENTS_API_My_Events();
         new BPGEVENTS_Permissions();
         new BPGEVENTS_Participation();
+        new BPGEVENTS_API();
+        new BPGEVENTS_API_My_Events();
         new BPGEVENTS_Notifications();
         new BPGEVENTS_Markers();
         new BPGEVENTS_Templates();
-
-        // BuddyPress
-        if ( function_exists( 'buddypress' ) ) {
-            new BPGEVENTS_BP();
-        }
 
         // Admin
         if ( is_admin() ) {
@@ -81,36 +123,23 @@ class BPGEVENTS {
         new BPGEVENTS_Shortcode_Event_Map();
 
         // Widgets
-        new BPGEVENTS_Widget_Upcoming_Events();
-        new BPGEVENTS_Widget_Events_Map();
+        add_action( 'widgets_init', function () {
+            register_widget( 'BPGEVENTS_Widget_Upcoming_Events' );
+            register_widget( 'BPGEVENTS_Widget_Events_Map' );
+        } );
 
-        // Assets
-        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
-
-        // ICS
-        add_action( 'init', array( $this, 'handle_ics_download' ) );
-
-        // Template override
-        add_filter( 'template_include', array( $this, 'template_override' ) );
+        // BuddyPress integration (if available)
+        if ( function_exists( 'buddypress' ) ) {
+            new BPGEVENTS_BP();
+        }
     }
 
     /**
-     * Traduzioni
-     */
-    public function load_textdomain() {
-        load_plugin_textdomain(
-            'bpgevents',
-            false,
-            dirname( plugin_basename( __FILE__ ) ) . '/languages/'
-        );
-    }
-
-    /**
-     * Caricamento CSS/JS
+     * Front-end assets
      */
     public function enqueue_assets() {
 
-        // Leaflet
+        // Leaflet core
         wp_enqueue_style(
             'leaflet',
             'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
@@ -126,58 +155,59 @@ class BPGEVENTS {
             true
         );
 
+        // Leaflet MarkerCluster
+        wp_enqueue_style(
+            'leaflet-markercluster',
+            'https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css',
+            array(),
+            '1.5.3'
+        );
+
+        wp_enqueue_style(
+            'leaflet-markercluster-default',
+            'https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css',
+            array(),
+            '1.5.3'
+        );
+
+        wp_enqueue_script(
+            'leaflet-markercluster',
+            'https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js',
+            array( 'leaflet' ),
+            '1.5.3',
+            true
+        );
+
         // Plugin CSS
         wp_enqueue_style(
-            'bpgevents-css',
-            plugin_dir_url( __FILE__ ) . 'assets/css/bpgevents.css',
+            'bpgevents',
+            BPGEVENTS_PLUGIN_URL . 'assets/css/bpgevents.css',
             array(),
-            '1.0.0'
+            BPGEVENTS_PLUGIN_VERSION
         );
 
         // Plugin JS
         wp_enqueue_script(
-            'bpgevents-js',
-            plugin_dir_url( __FILE__ ) . 'assets/js/bpgevents.js',
-            array(),
-            '1.0.0',
+            'bpgevents',
+            BPGEVENTS_PLUGIN_URL . 'assets/js/bpgevents.js',
+            array( 'jquery', 'leaflet', 'leaflet-markercluster' ),
+            BPGEVENTS_PLUGIN_VERSION,
             true
         );
 
-        wp_localize_script( 'bpgevents-js', 'bpgevents_ajax', array(
-            'ajax_url'           => admin_url( 'admin-ajax.php' ),
-            'join_label'         => __( 'Join Event', 'bpgevents' ),
-            'leave_label'        => __( 'Leave Event', 'bpgevents' ),
-            'participants_label' => __( 'Participants: %d', 'bpgevents' ),
+        wp_localize_script( 'bpgevents', 'BPGEVENTS', array(
+            'ajax_url' => admin_url( 'admin-ajax.php' ),
+            'nonce'    => wp_create_nonce( 'bpgevents_nonce' ),
         ) );
     }
 
     /**
-     * ICS download
+     * Admin assets (if needed)
      */
-    public function handle_ics_download() {
-        if ( isset( $_GET['bpgevents_download_ics'] ) ) {
-            $event_id = intval( $_GET['bpgevents_download_ics'] );
-            BPGEVENTS_ICS::download_ics( $event_id );
-        }
-    }
-
-    /**
-     * Template override
-     */
-    public function template_override( $template ) {
-
-        if ( is_singular( 'bpge_event' ) ) {
-            $custom = plugin_dir_path( __FILE__ ) . 'templates/bpgevents-single-event.php';
-            if ( file_exists( $custom ) ) return $custom;
-        }
-
-        if ( is_post_type_archive( 'bpge_event' ) ) {
-            $custom = plugin_dir_path( __FILE__ ) . 'templates/bpgevents-archive.php';
-            if ( file_exists( $custom ) ) return $custom;
-        }
-
-        return $template;
+    public function enqueue_admin_assets( $hook ) {
+        // Per ora non carichiamo CSS/JS admin dedicati.
+        // Potrai estendere qui se servirà.
     }
 }
 
-new BPGEVENTS();
+BPGEVENTS_Plugin::instance();
