@@ -1,0 +1,240 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Buddypress Groups Events 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bpgevents\n"
+"Language: it_IT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: bpgevents\n"
+
+# --------------------------------------------------------------
+# CPT
+# --------------------------------------------------------------
+
+msgid "Event"
+msgstr "Evento"
+
+msgid "Events"
+msgstr "Eventi"
+
+msgid "Add New Event"
+msgstr "Aggiungi nuovo evento"
+
+msgid "Edit Event"
+msgstr "Modifica evento"
+
+msgid "New Event"
+msgstr "Nuovo evento"
+
+msgid "View Event"
+msgstr "Visualizza evento"
+
+msgid "Search Events"
+msgstr "Cerca eventi"
+
+msgid "No events found."
+msgstr "Nessun evento trovato."
+
+msgid "No events found in Trash."
+msgstr "Nessun evento nel cestino."
+
+msgid "All Events"
+msgstr "Tutti gli eventi"
+
+# --------------------------------------------------------------
+# Meta Fields
+# --------------------------------------------------------------
+
+msgid "Event Details"
+msgstr "Dettagli evento"
+
+msgid "Virtual Event"
+msgstr "Evento virtuale"
+
+msgid "Presential Event"
+msgstr "Evento in presenza"
+
+msgid "Is this a virtual event?"
+msgstr "Questo è un evento virtuale?"
+
+msgid "City"
+msgstr "Città"
+
+msgid "Address"
+msgstr "Indirizzo"
+
+msgid "Province"
+msgstr "Provincia"
+
+msgid "Country"
+msgstr "Paese"
+
+msgid "Virtual Event URL"
+msgstr "URL evento virtuale"
+
+msgid "Latitude"
+msgstr "Latitudine"
+
+msgid "Longitude"
+msgstr "Longitudine"
+
+msgid "Save Event"
+msgstr "Salva evento"
+
+# --------------------------------------------------------------
+# Participation
+# --------------------------------------------------------------
+
+msgid "Join Event"
+msgstr "Partecipa"
+
+msgid "Leave Event"
+msgstr "Abbandona"
+
+msgid "Participants: %d"
+msgstr "Partecipanti: %d"
+
+msgid "You must be logged in to join this event."
+msgstr "Devi essere loggato per partecipare a questo evento."
+
+msgid "Invalid event."
+msgstr "Evento non valido."
+
+msgid "You have joined the event."
+msgstr "Hai aderito all'evento."
+
+msgid "You have left the event."
+msgstr "Hai abbandonato l'evento."
+
+# --------------------------------------------------------------
+# Shortcodes
+# --------------------------------------------------------------
+
+msgid "My Events"
+msgstr "I miei eventi"
+
+msgid "You must be logged in to view your events."
+msgstr "Devi essere loggato per visualizzare i tuoi eventi."
+
+msgid "You have not created any events yet."
+msgstr "Non hai ancora creato eventi."
+
+msgid "Invalid event ID."
+msgstr "ID evento non valido."
+
+msgid "This event does not have valid map coordinates."
+msgstr "Questo evento non ha coordinate valide per la mappa."
+
+# --------------------------------------------------------------
+# Widgets
+# --------------------------------------------------------------
+
+msgid "Upcoming Events"
+msgstr "Prossimi eventi"
+
+msgid "Displays a list of upcoming events."
+msgstr "Mostra un elenco dei prossimi eventi."
+
+msgid "No upcoming events found."
+msgstr "Nessun evento in arrivo trovato."
+
+msgid "Number of events to show:"
+msgstr "Numero di eventi da mostrare:"
+
+msgid "Events Map"
+msgstr "Mappa eventi"
+
+msgid "Displays a map with all events."
+msgstr "Mostra una mappa con tutti gli eventi."
+
+msgid "Map Height (e.g. 300px):"
+msgstr "Altezza mappa (es. 300px):"
+
+# --------------------------------------------------------------
+# Templates
+# --------------------------------------------------------------
+
+msgid "Download ICS File"
+msgstr "Scarica file ICS"
+
+msgid "Group Events"
+msgstr "Eventi del gruppo"
+
+msgid "No events found for this group."
+msgstr "Nessun evento trovato per questo gruppo."
+
+# --------------------------------------------------------------
+# ICS
+# --------------------------------------------------------------
+
+msgid "Unable to generate ICS file."
+msgstr "Impossibile generare il file ICS."
+
+# --------------------------------------------------------------
+# BuddyPress
+# --------------------------------------------------------------
+
+msgid "Events"
+msgstr "Eventi"
+
+msgid "Group Events"
+msgstr "Eventi del gruppo"
+
+# --------------------------------------------------------------
+# Admin Settings
+# --------------------------------------------------------------
+
+msgid "BPGE Events Settings"
+msgstr "Impostazioni BPGE Events"
+
+msgid "General Settings"
+msgstr "Impostazioni generali"
+
+msgid "Default Marker Color"
+msgstr "Colore predefinito del marker"
+
+msgid "Enable Virtual Events"
+msgstr "Abilita eventi virtuali"
+
+msgid "Enable City Auto-Geocoding"
+msgstr "Abilita geocodifica automatica della città"
+
+msgid "Choose the default color for map markers."
+msgstr "Scegli il colore predefinito per i marker della mappa."
+
+msgid "Settings saved."
+msgstr "Impostazioni salvate."
+
+# --------------------------------------------------------------
+# Maps
+# --------------------------------------------------------------
+
+msgid "Map"
+msgstr "Mappa"
+
+msgid "Invalid coordinates."
+msgstr "Coordinate non valide."
+
+# --------------------------------------------------------------
+# API
+# --------------------------------------------------------------
+
+msgid "Unauthorized."
+msgstr "Non autorizzato."
+
+msgid "Event not found."
+msgstr "Evento non trovato."
+
+msgid "No events available."
+msgstr "Nessun evento disponibile."
+
+# --------------------------------------------------------------
+# Misc
+# --------------------------------------------------------------
+
+msgid "Presential"
+msgstr "In presenza"
+
+msgid "Virtual"
+msgstr "Virtuale"
